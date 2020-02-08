@@ -1,0 +1,3 @@
+[submodule "tchlib"]
+	path = tchlib
+	url = https://dsacharny@bitbucket.org/utahddas/tchlib.git
