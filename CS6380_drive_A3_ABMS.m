@@ -32,6 +32,7 @@ del_t = 0.1;
 fnames(1).name = 'CS6380_USS_tom_1';
 fnames(2).name = 'CS6380_USS_tom_2';
 fnames(3).name = 'CS6380_UAS_tom_1';
+fnames(4).name = 'CS6380_ATOC_tom_1';
 
 % clear persistent variables
 num_agents = length(fnames);

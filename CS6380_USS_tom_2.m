@@ -72,6 +72,7 @@ switch state
                         [USS,index] = CS6380_index_USS(USS,mess_from);
                     elseif strcmp(mess_from(1:3),UAS_TYPE) % from UAS
                         % handle UAS
+                        [UAS,index] = CS6380_index_UAS(UAS,mess_from);
                     end
                 end
             end
