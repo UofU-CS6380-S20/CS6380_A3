@@ -33,12 +33,14 @@ fnames(1).name = 'CS6380_USS_tom_1';
 fnames(2).name = 'CS6380_USS_tom_2';
 fnames(3).name = 'CS6380_UAS_tom_1';
 fnames(4).name = 'CS6380_ATOC_tom_1';
+fnames(5).name = 'CS6380_UAS_tom_2';
 
 % clear persistent variables
 num_agents = length(fnames);
 for a = 1:num_agents
     clear(fnames(a).name);
 end
+clear('CS6380_A3_ABMS');
 
 res = CS6380_A3_ABMS(fnames,ports,max_t,del_t,draw);
 

@@ -50,6 +50,8 @@ for a = 1:num_agents
         agents(a,1) = 1;
     elseif strcmp(a_name(8:10),'UAS')
         agents(a,1) = 2;
+    elseif strcmp(a_name(8:11),'ATOC')
+        agents(a,1) = 3;
     end
     agents(a,9) = cur_time;
 end

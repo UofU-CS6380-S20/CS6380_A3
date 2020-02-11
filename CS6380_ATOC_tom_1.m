@@ -29,12 +29,14 @@ function action = CS6380_ATOC_tom_1(percept)
 MAX_SPEED = 10;
 BROADCAST = '*';
 MY_ID = 'ATOC_tom_1';
+TELEMETRY = 'TELEMETRY';
 ANNOUNCE_SELF = 'ANNOUNCE_SELF';
 USS_TYPE = 'USS';
 UAS_TYPE = 'UAS';
 ATOC_TYPE = 'ATOC';
 
 persistent state USS UAS flights AgentNames AgentTypes A_table uit fig
+global g_uit
 
 messages_out = [];
 
@@ -50,12 +52,11 @@ if isempty(state)
     A_table.AgentTypes = categorical(A_table.AgentTypes,...
         {'ATOC','USS','UAS'},'Ordinal',true);
     uit.Data = A_table;
-    messages_out(1).To = BROADCAST;
-    messages_out(1).From = MY_ID;
-    messages_out(1).Type = ANNOUNCE_SELF;
+    messages_out = CS6380_make_message(BROADCAST,MY_ID,ANNOUNCE_SELF,[]);
 end
 
 del_t = percept.del_t;
+flights = [];
 
 messages_in = percept.messages;
 action.dx = percept.dx;
@@ -74,28 +75,44 @@ while done==0
                     mess_from = messages_in(m).From;
                     mess_to = messages_in(m).To;
                     mess_type = messages_in(m).Type;
+                    mess_data = messages_in(m).Data;
                     if ~strcmp(mess_from,MY_ID) % not from myself
                         if strcmp(mess_from(1:3),USS_TYPE) % from USS
                             % handle USS
                             [USS,index] = CS6380_index_USS(USS,mess_from);
                         elseif strcmp(mess_from(1:3),UAS_TYPE) % from UAS
                             [UAS,index] = CS6380_index_UAS(UAS,mess_from);
+                            if strcmp(mess_type,TELEMETRY)
+                                flights = [flights;mess_data];
+                            end
                         end
                         [AgentNames,AgentTypes] = ...
-                            CS6380_insert_Agent_info(AgentNames,...
+                            CS6380_insert_agent_info(AgentNames,...
                             AgentTypes,mess_from);
                     end
                 end
             end
             state = 2;
         case 2 % Show USS, UAS and flights
+            [d1,d2] = size(AgentNames);
+            if d1==1
+                AgentNames = AgentNames';
+            end
+            [d1,d2] = size(AgentTypes);
+            if d1==1
+                AgentTypes = AgentTypes';
+            end
             A_table = table(AgentNames,AgentTypes);
-                A_table.AgentTypes = categorical(A_table.AgentTypes,...
-                    {'ATOC','USS','UAS'},'Ordinal',true);
+            A_table.AgentTypes = categorical(A_table.AgentTypes,...
+                {'ATOC','USS','UAS'},'Ordinal',true);
             uit.Data = A_table;
             state = 3;
-        case 3 % exit state
+        case 3  % Flight Display
+            CS6380_display_flights(flights);
+            state = 4;
+        case 4 % exit state
             state = 1;
             return
     end
 end
+

@@ -41,9 +41,7 @@ if isempty(state)
     state = 1;
     USS = [];
     UAS = [];
-    messages_out(1).To = BROADCAST;
-    messages_out(1).From = MY_ID;
-    messages_out(1).Type = ANNOUNCE_SELF;
+    messages_out = CS6380_make_message(BROADCAST,MY_ID,ANNOUNCE_SELF,[]);
 end
 
 del_t = percept.del_t;
@@ -57,7 +55,7 @@ action.messages = messages_out;
 
 switch state
     case 1 % first time in
-        display('USS Hello');
+        display('USS_tom_2 Hello');
         state = 2;
     case 2 % 
         if ~isempty(messages_in)
