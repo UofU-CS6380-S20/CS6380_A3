@@ -90,7 +90,11 @@ switch state
             end
         end
         cur_loc = [xa;ya;za];
-        goal = lanes(cur_lane,4:6)';
+        if(cur_lane <= num_lanes)
+            goal = lanes(cur_lane,4:6)';
+        else
+            goal = lanes(num_lanes,4:6)';
+        end
         dist = norm(goal-cur_loc);
         if dist<DIST_THRESH
             cur_lane = cur_lane + 1;
@@ -125,3 +129,6 @@ action.dy = state_vars(5);
 action.dz = state_vars(6);
 action.speed = state_vars(7);
 action.messages = messages_out;
+
+end
+
