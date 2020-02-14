@@ -2,7 +2,7 @@ function [AgentNames_out,AgentTypes_out] = CS6380_insert_agent_info(...
     AgentNames,AgentTypes,agent_name)
 %
 
-UNDERSCORE = '_';
+CS6380_load_ABMS_data;
 
 AgentNames_out = AgentNames;
 AgentTypes_out = AgentTypes;

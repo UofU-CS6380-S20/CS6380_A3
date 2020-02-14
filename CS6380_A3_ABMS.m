@@ -1,4 +1,4 @@
-function res = CS6380_A3_ABMS(fnames,ports,max_t,del_t,draw,film)
+function res = CS6380_A3_ABMS(fnames,ports,max_t,del_t,draw,film,dump)
 % CS6380_A3_ABMS - A3 ABMS simulator
 % On input:
 %     fnames (struct vector): names of agent function (filenames)
@@ -9,22 +9,25 @@ function res = CS6380_A3_ABMS(fnames,ports,max_t,del_t,draw,film)
 %     film (Boolean): make a movie from data
 % On output:
 %     res (struct vector): agent info at each step
-%       .agents(k).name
-%       .state (kx5 array): state for UAS
-%          col 1: agent index
+%       .agents (px9 array): info for each agent
+%          col 1: agent type (1: USS; 2: UAS: 3: ATOC)
 %          col 2: x coord
 %          col 3: y coord
 %          col 4: z coord
-%          col 5: time
+%          col 5: dx heading in x
+%          col 6: dy heading in y
+%          col 7: dz heading in z
+%          col 8: ground speed
+%          col 9: last time called
 % Call:
-%     r1 = CS6380_A3_ABMS(fnames,roads,max_t,del_t,0,0);
+%     r1 = CS6380_A3_ABMS(fnames,ports,max_t,del_t,0,0);
 % Author:
 %     T. Henderson
 %     UU
 %     Spring 2020
 %
 
-MAX_SPEED = 10;
+CS6380_load_ABMS_data;
 X_MIN = min(ports(:,1));
 X_MAX = max(ports(:,1));
 Y_MIN = min(ports(:,2));
@@ -59,6 +62,9 @@ end
 messages_in = [];
 count = 0;
 wb = waitbar(0,'Run ABMS A3');
+if dump==1
+    fd = fopen('popo','w');
+end
 while cur_time<max_t
     cur_time = cur_time + del_t;
     count = count + 1;
@@ -93,6 +99,9 @@ while cur_time<max_t
         messages_in = [messages_in;action.messages];
     end
     % update agent state (execute actions)
+    if dump==1
+        CS6380_dump_messages(fd,count,messages_in);
+    end
     for a = 1:num_agents
         if agents(a,1)==2
             % update heading
@@ -128,3 +137,6 @@ while cur_time<max_t
     % end of display
 end
 close(wb);
+if dump==1
+    fclose(fd);
+end

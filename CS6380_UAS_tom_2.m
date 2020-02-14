@@ -26,14 +26,8 @@ function action = CS6380_UAS_tom_2(percept)
 %     Spring 2020
 %
 
-MAX_SPEED = 10;
-BROADCAST = '*';
-TELEMETRY = 'TELEMETRY';
+CS6380_load_ABMS_data;
 MY_ID = 'UAS_tom_2';
-ANNOUNCE_SELF = 'ANNOUNCE_SELF';
-USS_TYPE = 'USS';
-UAS_TYPE = 'UAS';
-DIST_THRESH = 0.1;
 
 persistent state USS UAS state_vars
 persistent lanes cur_lane num_lanes
@@ -90,7 +84,11 @@ switch state
             end
         end
         cur_loc = [xa;ya;za];
-        goal = lanes(cur_lane,4:6)';
+        if cur_lane>0&cur_lane<=num_lanes
+            goal = lanes(cur_lane,4:6)';
+        else
+            goal = lanes(num_lanes,4:6);
+        end
         dist = norm(goal-cur_loc);
         if dist<DIST_THRESH
             cur_lane = cur_lane + 1;

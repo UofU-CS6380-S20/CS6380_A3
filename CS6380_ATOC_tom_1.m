@@ -26,17 +26,14 @@ function action = CS6380_ATOC_tom_1(percept)
 %     Spring 2020
 %
 
-MAX_SPEED = 10;
-BROADCAST = '*';
+global g_fig
+
+CS6380_load_ABMS_data;
+
 MY_ID = 'ATOC_tom_1';
-TELEMETRY = 'TELEMETRY';
-ANNOUNCE_SELF = 'ANNOUNCE_SELF';
-USS_TYPE = 'USS';
-UAS_TYPE = 'UAS';
-ATOC_TYPE = 'ATOC';
 
 persistent state USS UAS flights AgentNames AgentTypes A_table uit fig
-global g_uit
+persistent x_min y_min x_max y_max nx ny ports grid_request
 
 messages_out = [];
 
@@ -44,15 +41,19 @@ if isempty(state)
     state = 1;
     USS = [];
     UAS = [];
+    grid_request = 0;
     AgentNames = {'ATOC_tom_1'};
     AgentTypes = {'ATOC'};
     fig = uifigure('Position',[100 100 752 250]);
     uit = uitable('Parent',fig,'Position',[25 50 700 200]);
     A_table = table(AgentNames,AgentTypes);
     A_table.AgentTypes = categorical(A_table.AgentTypes,...
-        {'ATOC','USS','UAS'},'Ordinal',true);
+        {'ATOC','USS','UAS','GRS'},'Ordinal',true);
     uit.Data = A_table;
+    g_fig = fig;
     messages_out = CS6380_make_message(BROADCAST,MY_ID,ANNOUNCE_SELF,[]);
+    mo = CS6380_make_message(BROADCAST,MY_ID,REQUEST_GRID,[]);
+    messages_out = [messages_out;mo];
 end
 
 del_t = percept.del_t;
@@ -85,6 +86,22 @@ while done==0
                             if strcmp(mess_type,TELEMETRY)
                                 flights = [flights;mess_data];
                             end
+                        elseif strcmp(mess_from(1:3),GRS_TYPE)
+                            if isempty(x_min)&grid_request==0
+                                mo = CS6380_make_message(mess_from,...
+                                    MY_ID,REQUEST_GRID,[]);
+                                messages_out = [messages_out;mo];
+                                grid_request = 1;
+                            elseif isempty(x_min)&grid_request==1 ...
+                                &strcmp(mess_type,GRID)
+                                x_min = mess_data(1);
+                                y_min = mess_data(2);
+                                x_max = mess_data(3);
+                                y_max = mess_data(4);
+                                nx = mess_data(5);
+                                ny = mess_data(6);
+                                grid_request = 0;
+                            end
                         end
                         [AgentNames,AgentTypes] = ...
                             CS6380_insert_agent_info(AgentNames,...
@@ -104,11 +121,14 @@ while done==0
             end
             A_table = table(AgentNames,AgentTypes);
             A_table.AgentTypes = categorical(A_table.AgentTypes,...
-                {'ATOC','USS','UAS'},'Ordinal',true);
+                {'ATOC','USS','UAS','GRS'},'Ordinal',true);
             uit.Data = A_table;
             state = 3;
         case 3  % Flight Display
-            CS6380_display_flights(flights);
+            if ~isempty(x_min)
+                CS6380_display_flights(flights,x_min,y_min,x_max,y_max,...
+                    nx,ny);
+            end
             state = 4;
         case 4 % exit state
             state = 1;

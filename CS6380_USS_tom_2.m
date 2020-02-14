@@ -26,12 +26,8 @@ function action = CS6380_USS_tom_2(percept)
 %     Spring 2020
 %
 
-MAX_SPEED = 10;
-BROADCAST = '*';
+CS6380_load_ABMS_data;
 MY_ID = 'USS_tom_2';
-ANNOUNCE_SELF = 'ANNOUNCE_SELF';
-USS_TYPE = 'USS';
-UAS_TYPE = 'UAS';
 
 persistent state USS UAS
 
