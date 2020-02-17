@@ -33,13 +33,13 @@ end
 
 del_t = 0.1;
 fnames(1).name = 'CS6380_USS_tom_1';
-fnames(2).name = 'CS6380_USS_tom_2';
-fnames(3).name = 'CS6380_UAS_tom_1';
-fnames(4).name = 'CS6380_ATOC_tom_1';
-fnames(5).name = 'CS6380_UAS_tom_2';
-fnames(6).name = 'CS6380_UAS_tom_3';
-fnames(7).name = 'CS6380_UAS_tom_4';
-fnames(8).name = 'CS6380_GRS_tom_1';
+fnames(2).name = 'CS6380_GRS_tom_1';
+fnames(3).name = 'CS6380_ATOC_tom_1';
+fnames(4).name = 'CS6380_UAS_tom_1';
+%fnames(2).name = 'CS6380_USS_tom_2';
+%fnames(5).name = 'CS6380_UAS_tom_2';
+%fnames(6).name = 'CS6380_UAS_tom_3';
+%fnames(7).name = 'CS6380_UAS_tom_4';
 
 % clear persistent variables
 num_agents = length(fnames);

@@ -93,6 +93,12 @@ while cur_time<max_t
         percept.messages = messages_out;
         % Call agent
         action = feval(fnames(a).name,percept);
+        af = fieldnames(action);
+        if length(af)<6
+            action.realx = [];
+            action.realy = [];
+            action.realz = [];
+        end
         % Update world
         actions(a) = action;
         percepts(a) = percept;
@@ -104,6 +110,12 @@ while cur_time<max_t
     end
     for a = 1:num_agents
         if agents(a,1)==2
+            % update real location
+            if ~isempty(actions(a).realx)
+                agents(a,2) = actions(a).realx;
+                agents(a,3) = actions(a).realy;
+                agents(a,4) = actions(a).realz;
+            end
             % update heading
             dx = actions(a).dx;
             dy = actions(a).dy;
@@ -126,6 +138,9 @@ while cur_time<max_t
         else
             tch = 0;
         end
+    end
+    if max_t-cur_time<0.1
+        tch = 0;
     end
     res(count).agents = agents;
     % step by step display of agents

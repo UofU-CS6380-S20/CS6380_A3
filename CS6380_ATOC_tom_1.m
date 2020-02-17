@@ -51,8 +51,8 @@ if isempty(state)
         {'ATOC','USS','UAS','GRS'},'Ordinal',true);
     uit.Data = A_table;
     g_fig = fig;
-    messages_out = CS6380_make_message(BROADCAST,MY_ID,ANNOUNCE_SELF,[]);
-    mo = CS6380_make_message(BROADCAST,MY_ID,REQUEST_GRID,[]);
+    messages_out = CS6380_make_message(BROADCAST,MY_ID,ANNOUNCE_SELF,[],[]);
+    mo = CS6380_make_message(BROADCAST,MY_ID,REQUEST_GRID,[],[]);
     messages_out = [messages_out;mo];
 end
 
@@ -89,7 +89,7 @@ while done==0
                         elseif strcmp(mess_from(1:3),GRS_TYPE)
                             if isempty(x_min)&grid_request==0
                                 mo = CS6380_make_message(mess_from,...
-                                    MY_ID,REQUEST_GRID,[]);
+                                    MY_ID,REQUEST_GRID,[],[]);
                                 messages_out = [messages_out;mo];
                                 grid_request = 1;
                             elseif isempty(x_min)&grid_request==1 ...
@@ -135,4 +135,3 @@ while done==0
             return
     end
 end
-

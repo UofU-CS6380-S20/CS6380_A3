@@ -1,8 +1,8 @@
 function pt = CS6380_loc_in_traj(traj,ts,speed,tc)
 %
 
-num_pts = length(traj)/3;
-way_pts = reshape(traj,3,num_pts)';
+way_pts = CS6380_traj2waypts(traj);
+num_pts = length(way_pts(:,1));
 pt = way_pts(1,:);
 dist = speed*(tc-ts);
 total_dist = 0;

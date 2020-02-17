@@ -1,18 +1,14 @@
-function index = CS6380_grid_index(x_min,y_min,x_max,y_max,nx,ny,x,y)
+function index = CS6380_grid_index(UTM_grid,x,y)
 % CS6380_grid_index - linear grid index for grid element containing [x,y]'
 % On input:
-%     x_min (float): minimum x value in grid
-%     y_min (float): minimum y value in grid
-%     x_max (float): maximum x value in grid
-%     y_max (float): maximum y value in grid
-%     nx (int): number of grid rows
-%     ny (int): number of grid cols
+%     grid (1x6 vector): grid definition
+%         [x_min y_min x_max y_max nx ny]
 %     x (float): x value in grid
 %     y (float): y value in grid
 % On output:
 %     index (int): linear index of grid element
 % Call:
-%     index = CS6380_grid_index(0,0,40,40,4,4,30.2,22.6);
+%     index = CS6380_grid_index(grid,30.2,22.6);
 % Author:
 %     T. Henderson
 %     UU
@@ -20,6 +16,13 @@ function index = CS6380_grid_index(x_min,y_min,x_max,y_max,nx,ny,x,y)
 %
 
 index = 0;
+
+x_min = UTM_grid(1);
+y_min = UTM_grid(2);
+x_max = UTM_grid(3);
+y_max = UTM_grid(4);
+nx = UTM_grid(5);
+ny = UTM_grid(6);
 
 x_d = x_max - x_min;
 y_d = y_max - y_min;

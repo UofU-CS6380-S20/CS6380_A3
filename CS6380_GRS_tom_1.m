@@ -47,7 +47,7 @@ if isempty(state)
     for g = 1:num_ge
         ge_USS(g).USS = [];
     end
-    messages_out = CS6380_make_message(BROADCAST,MY_ID,ANNOUNCE_SELF,[]);
+    messages_out = CS6380_make_message(BROADCAST,MY_ID,ANNOUNCE_SELF,[],[]);
 end
 
 del_t = percept.del_t;
@@ -70,11 +70,12 @@ while done==0
                     mess_from = messages_in(m).From;
                     mess_to = messages_in(m).To;
                     mess_type = messages_in(m).Type;
+                    mess_subtype = messages_in(m).Subtype;
                     mess_data = messages_in(m).Data;
                     if ~strcmp(mess_from,MY_ID) % not from myself
                         if strcmp(mess_type,REQUEST_GRID)
                             mo = CS6380_make_message(...
-                                mess_from,MY_ID,GRID,grid);
+                                mess_from,MY_ID,GRID,[],grid);
                             messages_out = [messages_out;mo];
                         elseif strcmp(mess_from(1:3),USS_TYPE) % from USS
                             % handle USS
@@ -106,13 +107,21 @@ while done==0
                                     if ~isempty(mess_data)
                                         num_ge = length(mess_data);
                                         for g = 1:num_ge
-                                            list(ge).ge = mess_data(g);
+                                            list(g).ge = mess_data(g);
                                             ge_index = mess_data(g);
-                                            list(ge).USS = ...
+                                            USS_indexes = ...
                                                 ge_USS(ge_index).USS;
+                                            num_USS_indexes = length(...
+                                                USS_indexes);
+                                            list(g).USS = [];
+                                            for u = 1:num_USS_indexes
+                                                list(g).USS = [list(g).USS;...
+                                                    USS(USS_indexes(u)).name];
+                                            end
                                         end
                                         mo = CS6380_make_message(...
-                                            mess_to,MY_ID,USS_GE,list);
+                                            mess_from,MY_ID,USS_GE,...
+                                            mess_subtype,list);
                                         messages_out = [messages_out;mo];                                        
                                     end
                             end
@@ -124,4 +133,3 @@ while done==0
     end
 end
 action.messages = messages_out;
-

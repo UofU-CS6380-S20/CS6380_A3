@@ -7,5 +7,6 @@ num_messages = length(messages);
 for m = 1:num_messages
     fprintf(fd,' To: %s \n',messages(m).To);
     fprintf(fd,' From: %s \n',messages(m).From);
-    fprintf(fd,' Type: %s \n\n',messages(m).Type);
+    fprintf(fd,' Type: %s \n',messages(m).Type);
+    fprintf(fd,' Subtype: %s \n\n',messages(m).Subtype);
 end
